@@ -32,7 +32,7 @@
             height: 100vh;
             height: 100dvh;
             /* Increased the base bottom padding and added it to the safe-area inset */
-            padding: max(40px, env(safe-area-inset-top)) 20px calc(env(safe-area-inset-bottom) + 100px);
+            padding: max(40px, env(safe-area-inset-top)) 20px calc(env(safe-area-inset-bottom) + 50px);
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Yanone Kaffeesatz', system-ui, sans-serif;
@@ -125,11 +125,11 @@
             letter-spacing: 1px;
         }
 
-.timer-controls {
-      display: flex;
-      gap: 15px;
-      margin-bottom: 20px; /* Pushes the buttons up slightly from the absolute bottom */
-    }
+        .timer-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px; /* Pushes the buttons up slightly from the absolute bottom */
+        }
 
         .ctrl-btn {
             width: 80px;
