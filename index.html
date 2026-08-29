@@ -26,23 +26,20 @@
       -webkit-user-select: none;
     }
 
-    body {
+body {
       margin: 0;
       width: 100vw;
-      /* Fallback for older browsers */
       height: 100vh; 
-      /* Dynamic viewport height fixes the mobile browser UI bar cutoff */
       height: 100dvh; 
-      /* Ensures content doesn't hit device notches or bottom gesture bars */
-      padding: max(20px, env(safe-area-inset-top)) 20px max(20px, env(safe-area-inset-bottom));
-      
+      /* Increased the base bottom padding and added it to the safe-area inset */
+      padding: max(20px, env(safe-area-inset-top)) 20px calc(env(safe-area-inset-bottom) + 40px);
       background-color: var(--bg-color);
       color: var(--text-color);
       font-family: 'Yanone Kaffeesatz', system-ui, sans-serif;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between; /* Spreads out header, button, and footer nicely */
+      justify-content: space-between;
       transition: background-color 0.4s ease;
       overflow: hidden;
       position: relative;
