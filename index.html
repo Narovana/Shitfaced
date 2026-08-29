@@ -29,19 +29,22 @@
         body {
             margin: 0;
             width: 100vw;
-            height: 100vh;
-            height: 100dvh;
-            /* Increased the base bottom padding and added it to the safe-area inset */
-            padding: max(40px, env(safe-area-inset-top)) 20px calc(env(safe-area-inset-bottom) + 50px);
+            /* Changed from height to min-height */
+            min-height: 100dvh;
+            /* Generous bottom padding */
+            padding: max(20px, env(safe-area-inset-top)) 20px max(40px, env(safe-area-inset-bottom));
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Yanone Kaffeesatz', system-ui, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
+            /* space-evenly distributes leftover empty space better than space-between */
+            justify-content: space-evenly;
             transition: background-color 0.4s ease;
-            overflow: hidden;
+            /* The Magic Fix: allow scrolling if elements overflow */
+            overflow-x: hidden;
+            overflow-y: auto;
             position: relative;
         }
 
