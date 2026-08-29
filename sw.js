@@ -1,5 +1,11 @@
-const CACHE_NAME = 'shitfaced-v1';
-const ASSETS = ['./', './index.html', './manifest.json'];
+const CACHE_NAME = 'shitfaced-v2';
+const ASSETS = [
+  './', 
+  './index.html', 
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
+];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
@@ -10,5 +16,18 @@ self.addEventListener('install', (e) => {
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((res) => res || fetch(e.request))
+  );
+});
+
+// This automatically cleans up the old v1 cache so it doesn't conflict
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keyList) => {
+      return Promise.all(keyList.map((key) => {
+        if (key !== CACHE_NAME) {
+          return caches.delete(key);
+        }
+      }));
+    })
   );
 });
