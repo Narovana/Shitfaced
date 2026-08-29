@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#121212" />
+    <title>Shitfaced</title>
+    <link rel="manifest" href="manifest.json" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Victor+Mono:wght@400;700&family=Yanone+Kaffeesatz:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-color: #121212;
+            --bg-danger: #8b0000;
+            --text-color: #ffffff;
+            --btn-color: #1f1f1f;
+            --btn-active: #333333;
+            --modal-bg: #1a1a1a;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Yanone Kaffeesatz', system-ui, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            transition: background-color 0.4s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+            body.danger-zone {
+                background-color: var(--bg-danger);
+            }
+
+        header {
+            text-align: center;
+            position: relative;
+            width: 100%;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 3rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.8;
+        }
+
+        /* Settings Toggle Button */
+        #settings-toggle {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        #timer-display {
+            font-size: 2rem;
+            margin-top: 5px;
+            opacity: 0.6;
+        }
+
+        .timer-label {
+            font-size: 1.2rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+        }
+
+        .main-btn-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #drink-btn {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            background: var(--btn-color);
+            color: var(--text-color);
+            font-size: 7rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            transition: transform 0.05s ease, background-color 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            #drink-btn:active {
+                transform: scale(0.95);
+                background: var(--btn-active);
+            }
+
+        #queue-display {
+            font-size: 1.4rem;
+            opacity: 0.5;
+            letter-spacing: 1px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 15px;
+        }
+
+        .ctrl-btn {
+            width: 80px;
+            height: 50px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+            .ctrl-btn:active {
+                background: rgba(255, 255, 255, 0.3);
+            }
+
+        #reset-btn {
+            background: rgba(255, 71, 87, 0.2);
+        }
+
+            #reset-btn:active {
+                background: rgba(255, 71, 87, 0.4);
+            }
+
+        #status-msg {
+            height: 30px;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+            color: #ffda79;
+        }
+
+        /* Settings Modal */
+        #settings-modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 100;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            padding: 30px;
+            border-radius: 16px;
+            width: 85%;
+            max-width: 400px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+            .modal-content h2 {
+                margin-top: 0;
+                text-align: center;
+                font-size: 2rem;
+            }
+
+        .setting-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+            .setting-group label {
+                font-size: 1.2rem;
+                opacity: 0.8;
+            }
+
+            .setting-group input {
+                background: #000;
+                border: 1px solid rgba(255,255,255,0.2);
+                color: var(--text-color);
+                font-family: 'Victor Mono', monospace;
+                font-size: 1.2rem;
+                padding: 10px;
+                border-radius: 8px;
+                width: 100%;
+            }
+
+        .save-settings-btn {
+            width: 100%;
+            padding: 15px;
+            background: #4cd137;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Shitfaced</h1>
+        <button id="settings-toggle">⚙️</button>
+        <div class="timer-label">Session Time</div>
+        <div id="timer-display">00:00:00</div>
+    </header>
+
+    <div class="main-btn-container">
+        <button id="drink-btn">0</button>
+        <div id="queue-display">Processing: 0</div>
+    </div>
+
+    <div id="status-msg"></div>
+
+    <div class="timer-controls">
+        <button class="ctrl-btn" id="sub-time-btn">-10m</button>
+        <button class="ctrl-btn" id="reset-btn">Reset</button>
+        <button class="ctrl-btn" id="add-time-btn">+10m</button>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal">
+        <div class="modal-content">
+            <h2>Configuration</h2>
+
+            <div class="setting-group">
+                <label for="input-max-session">Max Drinks Per Session</label>
+                <input type="number" id="input-max-session" min="1">
+            </div>
+
+            <div class="setting-group">
+                <label for="input-cooldown">Drink Cooldown (Minutes)</label>
+                <input type="number" id="input-cooldown" min="1">
+            </div>
+
+            <button class="save-settings-btn" id="save-settings-btn">Save & Close</button>
+        </div>
+    </div>
+
+    <script>
+        // --- CONFIGURATION THRESHOLDS ---
+        // Changed to 'let' so it can be mutated by settings and loaded from storage
+        let CONFIG = {
+            MAX_SESSION_DRINKS: 5,
+            MAX_ACTIVE_DRINKS: 1,
+            DRINK_PROCESS_TIME_SEC: 1800,
+            TIME_ADJUST_STEP_SEC: 600
+        };
+
+        // --- STATE VARIABLES ---
+        let totalSessionDrinks = 0;
+        let sessionStartTime = null;
+        let drinkExpirations = [];
+        let timeOffset = 0;
+        let timerInterval = null;
+
+        // --- DOM ELEMENTS ---
+        const drinkBtn = document.getElementById('drink-btn');
+        const queueDisplay = document.getElementById('queue-display');
+        const timerDisplay = document.getElementById('timer-display');
+        const statusMsg = document.getElementById('status-msg');
+        const addTimeBtn = document.getElementById('add-time-btn');
+        const subTimeBtn = document.getElementById('sub-time-btn');
+        const resetBtn = document.getElementById('reset-btn');
+
+        // Modal Elements
+        const settingsToggle = document.getElementById('settings-toggle');
+        const settingsModal = document.getElementById('settings-modal');
+        const saveSettingsBtn = document.getElementById('save-settings-btn');
+        const inputMaxSession = document.getElementById('input-max-session');
+        const inputCooldown = document.getElementById('input-cooldown');
+
+        // --- LOCAL STORAGE LOGIC ---
+        const STORAGE_KEY = 'shitfaced_save_v1';
+
+        function saveState() {
+            const state = {
+                totalSessionDrinks,
+                sessionStartTime,
+                drinkExpirations,
+                timeOffset,
+                CONFIG
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        }
+
+        function loadState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const state = JSON.parse(saved);
+                    totalSessionDrinks = state.totalSessionDrinks || 0;
+                    sessionStartTime = state.sessionStartTime || null;
+                    drinkExpirations = state.drinkExpirations || [];
+                    timeOffset = state.timeOffset || 0;
+                    if (state.CONFIG) {
+                        CONFIG = state.CONFIG;
+                    }
+
+                    if (sessionStartTime && !timerInterval) {
+                        timerInterval = setInterval(tick, 1000);
+                    }
+                } catch (e) {
+                    console.error("Failed to load save data");
+                }
+            }
+        }
+
+        function getVirtualNow() {
+            return Math.floor(Date.now() / 1000) + timeOffset;
+        }
+
+        function tick() {
+            updateUI();
+        }
+
+        // --- EVENT HANDLERS ---
+        drinkBtn.addEventListener('click', () => {
+            const now = getVirtualNow();
+
+            if (!sessionStartTime) {
+                sessionStartTime = now;
+                timerInterval = setInterval(tick, 1000);
+            }
+
+            totalSessionDrinks++;
+            let expireTime = now + CONFIG.DRINK_PROCESS_TIME_SEC;
+
+            if (drinkExpirations.length > 0) {
+                const lastExpiration = drinkExpirations[drinkExpirations.length - 1];
+                expireTime = Math.max(now, lastExpiration) + CONFIG.DRINK_PROCESS_TIME_SEC;
+            }
+
+            drinkExpirations.push(expireTime);
+            updateUI();
+        });
+
+        addTimeBtn.addEventListener('click', () => {
+            if (sessionStartTime) {
+                timeOffset += CONFIG.TIME_ADJUST_STEP_SEC;
+                updateUI();
+            }
+        });
+
+        subTimeBtn.addEventListener('click', () => {
+            if (sessionStartTime) {
+                timeOffset -= CONFIG.TIME_ADJUST_STEP_SEC;
+                updateUI();
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            totalSessionDrinks = 0;
+            sessionStartTime = null;
+            drinkExpirations = [];
+            timeOffset = 0;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            updateUI();
+        });
+
+        // --- SETTINGS MODAL HANDLERS ---
+        settingsToggle.addEventListener('click', () => {
+            // Populate inputs with current config
+            inputMaxSession.value = CONFIG.MAX_SESSION_DRINKS;
+            inputCooldown.value = CONFIG.DRINK_PROCESS_TIME_SEC / 60; // Convert sec to min
+            settingsModal.style.display = 'flex';
+        });
+
+        saveSettingsBtn.addEventListener('click', () => {
+            const newMax = parseInt(inputMaxSession.value);
+            const newCooldownMins = parseInt(inputCooldown.value);
+
+            if (!isNaN(newMax) && newMax > 0) {
+                CONFIG.MAX_SESSION_DRINKS = newMax;
+            }
+            if (!isNaN(newCooldownMins) && newCooldownMins > 0) {
+                CONFIG.DRINK_PROCESS_TIME_SEC = newCooldownMins * 60; // Convert min to sec
+            }
+
+            settingsModal.style.display = 'none';
+            updateUI();
+        });
+
+        // --- STATE EVALUATION & UI RENDER ---
+        function updateUI() {
+            const now = getVirtualNow();
+
+            drinkExpirations = drinkExpirations.filter(expireTime => expireTime > now);
+            const activeDrinkCount = drinkExpirations.length;
+
+            drinkBtn.textContent = totalSessionDrinks;
+            queueDisplay.textContent = `Processing: ${activeDrinkCount}`;
+
+            if (sessionStartTime) {
+                const elapsed = Math.max(0, now - sessionStartTime);
+                const hrs = Math.floor(elapsed / 3600);
+                const mins = Math.floor((elapsed % 3600) / 60);
+                const secs = elapsed % 60;
+
+                const pad = (n) => String(n).padStart(2, '0');
+                timerDisplay.textContent = `${pad(hrs)}:${pad(mins)}:${pad(secs)}`;
+            } else {
+                timerDisplay.textContent = "00:00:00";
+            }
+
+            const isTooFast = activeDrinkCount > CONFIG.MAX_ACTIVE_DRINKS;
+            const isOverMax = totalSessionDrinks >= CONFIG.MAX_SESSION_DRINKS;
+            const isDanger = isTooFast || isOverMax;
+
+            document.body.classList.toggle('danger-zone', isDanger);
+
+            if (isOverMax && isTooFast) {
+                statusMsg.textContent = "LIMIT REACHED & TOO FAST";
+            } else if (isOverMax) {
+                statusMsg.textContent = "SESSION LIMIT REACHED";
+            } else if (isTooFast) {
+                statusMsg.textContent = "SLOW DOWN";
+            } else {
+                statusMsg.textContent = "";
+            }
+
+            // Save to local storage on every UI update
+            saveState();
+        }
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').catch(() => { });
+        }
+
+        // Initialization
+        loadState();
+        updateUI();
+    </script>
+</body>
+</html>
